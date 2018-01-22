@@ -3,8 +3,10 @@
 
     let contador = document.querySelectorAll('.cartao').length;
 
-    function criarCartao(conteudo, cor) {
+    const listaCartao =[]
 
+    function criarCartao({conteudo, cor}) {
+        listaCartao.push({conteudo, cor})
         contador++;
         const $mural = $('.mural');
         const $tpl = document.createElement('tpl');
@@ -53,7 +55,6 @@
             const $elementoAtual = $(event.target);
             const novaCor = $elementoAtual.val();
 
-            console.log($cartao, $elementoAtual)
 
             $cartao.css('background', novaCor);
         })
@@ -79,5 +80,19 @@
         $mural.prepend($cartao);
 
     }
-    window.criarCartao = criarCartao
-})()
+    window.criarCartao = criarCartao;
+    window.listaCartao = listaCartao;
+    const xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://ceep.herokuapp.com/cartoes/carregar/?usuario=renan");
+
+        //Assíncrono
+        xhr.send();
+
+        xhr.responseType = "json";
+
+        xhr.addEventListener("load", function(){
+            const ajudas = xhr.response.cartoes;
+            ajudas.reverse().forEach(ajuda => criarCartao(ajuda))
+
+        })
+})();
